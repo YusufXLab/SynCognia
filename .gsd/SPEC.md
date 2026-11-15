@@ -1,8 +1,8 @@
 # SPEC.md — Project Specification: SynCognia
 
-> **Status**: `DRAFT`
+> **Status**: `FINALIZED`
 >
-> ⚠️ **Planning Lock**: No implementation code may be written until this spec is marked `FINALIZED`.
+> ⚠️ **Planning Lock**: Cleared. Specification is frozen for Milestone 1.
 
 ---
 
@@ -70,13 +70,13 @@
 ## Technical Constraints & Architecture
 
 - **Frontend**: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, Lucide icons, responsive mobile-first UI.
-- **Backend / API**: Next.js Server Actions / API Routes + FastAPI Python microservice (or unified TypeScript stack) for document processing and AI orchestration.
-- **AI & Vision Model**: Google Gemini API (`gemini-2.5-flash` / `gemini-1.5-flash`) for fast, cost-effective multimodal OCR and structured JSON output.
+- **Backend / API**: Next.js Server Actions & Route Handlers with unified TypeScript stack.
+- **AI & Vision Model**: Google Gemini API (`gemini-2.5-flash`) for fast, cost-effective multimodal OCR and structured JSON output.
 - **Database & Storage**:
-  - PostgreSQL with Prisma ORM / Drizzle ORM, with `pgvector` for semantic search embeddings.
-  - Encrypted file storage (S3-compatible / Supabase Storage / local encrypted storage in dev).
-- **Authentication**: Modern session-based or token-based auth (e.g. NextAuth / Auth0 / Supabase Auth).
-- **Security & Privacy**: Client-side metadata sanitation and encrypted storage for sensitive documents.
+  - PostgreSQL (via Prisma ORM / SQLite for local development) with vector embedding extensions.
+  - Encrypted file storage for attached documents and receipt scans.
+- **Authentication**: NextAuth.js / session-based authentication.
+- **Security & Privacy**: Client-side metadata sanitization and encrypted document assets.
 
 ---
 
@@ -90,4 +90,4 @@
 
 ---
 
-*Last updated: 2026-11-15 (Drafted by GSD Planner)*
+*Last updated: 2026-11-15 (FINALIZED by GSD Planner)*
