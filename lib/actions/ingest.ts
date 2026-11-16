@@ -175,10 +175,14 @@ export async function persistExtractedReceipt(
       };
     });
 
-    // Revalidate relevant pages
-    revalidatePath("/");
-    revalidatePath("/assets");
-    revalidatePath("/receipts");
+    // Revalidate relevant pages (safely caught when invoked in CLI/test runners)
+    try {
+      revalidatePath("/");
+      revalidatePath("/assets");
+      revalidatePath("/receipts");
+    } catch {
+      // Invariant: static generation store missing when invoked outside Next.js request context
+    }
 
     return {
       success: true,
