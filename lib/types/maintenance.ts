@@ -47,9 +47,9 @@ export interface UpdateMaintenanceScheduleInput {
 
 export interface LogServiceInput {
   scheduleId?: string | null;
-  assetId: string;
+  assetId?: string;
   title?: string | null;
-  serviceDate: Date | string;
+  serviceDate?: Date | string;
   mileage?: number | null;
   cost?: number | null;
   serviceProvider?: string | null;
