@@ -9,6 +9,7 @@ import {
   UpdateMaintenanceScheduleInput,
   LogServiceInput,
   MaintenanceMetrics,
+  MaintenanceSyncResult,
 } from "@/lib/types/maintenance";
 import {
   addMonthsSafely,
@@ -17,6 +18,7 @@ import {
   calculateMaintenanceStatus,
   enhanceMaintenanceSchedule,
   advanceRecurrenceCycle,
+  syncAllMaintenanceStatuses,
 } from "@/lib/services/maintenanceEngine";
 import { MaintenanceLog } from "@prisma/client";
 
@@ -516,3 +518,21 @@ export async function getMaintenanceSummaryMetrics(): Promise<ActionResult<Maint
     };
   }
 }
+
+/**
+ * Synchronizes persisted status fields for all active schedules.
+ */
+export async function syncMaintenanceStatuses(): Promise<ActionResult<MaintenanceSyncResult>> {
+  try {
+    const result = await syncAllMaintenanceStatuses();
+    safeRevalidate(["/maintenance", "/", "/assets"]);
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Failed to sync maintenance statuses:", error);
+    return {
+      success: false,
+      error: (error as Error).message || "Failed to synchronize maintenance statuses",
+    };
+  }
+}
+
