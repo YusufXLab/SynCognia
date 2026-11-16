@@ -63,8 +63,9 @@ updated: 2026-11-16T13:48:00+05:30
 **Depends on:** Phase 3
 
 **Plans:**
-- [ ] Plan 4.1: Preventive maintenance profile engine and recurrence tracker
-- [ ] Plan 4.2: Service logging UI, receipt linking, and history timeline
+- [ ] Plan 4.1: Preventive Maintenance Engine, Schema Migrations, Server Actions & API Handlers
+- [ ] Plan 4.2: Preventive Maintenance Hub UI, Modals & History Timeline
+- [ ] Plan 4.3: Live Dashboard Maintenance Integration & Comprehensive Automated Verification Suite
 
 ---
 
@@ -96,7 +97,7 @@ updated: 2026-11-16T13:48:00+05:30
 |-------|--------|-------|----------|
 | 1 | ✅ | 3/3 | 100% |
 | 2 | ✅ | 2/2 | 100% |
-| 3 | ⬜ | 0/3 | 0% |
-| 4 | ⬜ | 0/2 | 0% |
+| 3 | ✅ | 3/3 | 100% |
+| 4 | ⬜ | 0/3 | 0% |
 | 5 | ⬜ | 0/2 | 0% |
 | 6 | ⬜ | 0/2 | 0% |
