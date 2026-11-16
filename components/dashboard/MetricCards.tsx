@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
-import { Package, ShieldCheck, Clock, Wrench } from "lucide-react";
+import { Package, ShieldCheck, Clock, RotateCcw } from "lucide-react";
+import { DashboardMetrics } from "@/lib/actions/dashboard";
 
 interface MetricCardProps {
   title: string;
@@ -45,36 +48,51 @@ function MetricCard({ title, value, subtitle, icon: Icon, badge }: MetricCardPro
   );
 }
 
-export function MetricCards() {
+interface MetricCardsProps {
+  metrics?: DashboardMetrics;
+}
+
+export function MetricCards({ metrics }: MetricCardsProps) {
+  const totalAssets = metrics?.totalAssets ?? 0;
+  const physicalCount = metrics?.physicalCount ?? 0;
+  const digitalCount = metrics?.digitalCount ?? 0;
+  const activeWarranties = metrics?.activeWarranties ?? 0;
+  const coveragePercentage = metrics?.coveragePercentage ?? 0;
+  const expiringSoonCount = metrics?.expiringSoonCount ?? 0;
+  const activeReturnWindows = metrics?.activeReturnWindows ?? 0;
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <MetricCard
         title="Total Registered Assets"
-        value={24}
-        subtitle="18 physical • 6 digital"
+        value={totalAssets}
+        subtitle={`${physicalCount} physical • ${digitalCount} digital`}
         icon={Package}
-        badge={{ text: "+4 this month", variant: "indigo" }}
+        badge={{ text: "In Inventory", variant: "indigo" }}
       />
       <MetricCard
         title="Active Warranties"
-        value={19}
-        subtitle="79% of current assets covered"
+        value={activeWarranties}
+        subtitle={`${coveragePercentage}% of current assets covered`}
         icon={ShieldCheck}
         badge={{ text: "Protected", variant: "emerald" }}
       />
       <MetricCard
         title="Expiring Soon (30d)"
-        value={3}
+        value={expiringSoonCount}
         subtitle="Return windows & warranties"
         icon={Clock}
-        badge={{ text: "Action required", variant: "amber" }}
+        badge={{
+          text: expiringSoonCount > 0 ? "Action required" : "All Clear",
+          variant: expiringSoonCount > 0 ? "amber" : "emerald",
+        }}
       />
       <MetricCard
-        title="Pending Maintenance"
-        value={2}
-        subtitle="Next: HVAC Filter (in 5d)"
-        icon={Wrench}
-        badge={{ text: "Scheduled", variant: "indigo" }}
+        title="Open Return Windows"
+        value={activeReturnWindows}
+        subtitle="Active return deadlines"
+        icon={RotateCcw}
+        badge={{ text: "Decisions", variant: "indigo" }}
       />
     </div>
   );
