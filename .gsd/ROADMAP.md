@@ -47,12 +47,13 @@ updated: 2026-11-16T13:48:00+05:30
 
 ### Phase 3: Warranty Tracking & Return/Expiry Intelligence Engine
 **Status:** ⬜ Not Started (Next)
-**Objective:** Real-time warranty coverage calculations, return window countdowns, expiring soon dashboard badges, and notification schedule triggers.
+**Objective:** Real-time warranty coverage calculations, return window countdowns, expiring soon dashboard badges, notification schedule triggers, and RFC 5545 calendar export.
 **Depends on:** Phase 2
 
 **Plans:**
-- [ ] Plan 3.1: Warranty & return calculation logic with deadline badges
-- [ ] Plan 3.2: Expiry notification dispatchers and calendar (.ics) sync
+- [ ] Plan 3.1: Warranty & Return Policy Calculation Engine, Status Sync & Server Actions
+- [ ] Plan 3.2: Expiry Notification Dispatcher & RFC 5545 Calendar (.ics) Export Engine
+- [ ] Plan 3.3: Warranties Hub UI, Live Dashboard Integration & Comprehensive Verification
 
 ---
 
@@ -94,8 +95,8 @@ updated: 2026-11-16T13:48:00+05:30
 | Phase | Status | Plans | Complete |
 |-------|--------|-------|----------|
 | 1 | ✅ | 3/3 | 100% |
-| 2 | ⬜ | 0/2 | 0% |
-| 3 | ⬜ | 0/2 | 0% |
+| 2 | ✅ | 2/2 | 100% |
+| 3 | ⬜ | 0/3 | 0% |
 | 4 | ⬜ | 0/2 | 0% |
 | 5 | ⬜ | 0/2 | 0% |
 | 6 | ⬜ | 0/2 | 0% |
