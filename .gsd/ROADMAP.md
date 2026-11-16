@@ -6,14 +6,14 @@ updated: 2026-11-16T13:48:00+05:30
 
 # Roadmap
 
-> **Current Phase:** 3 - Warranty Tracking & Return/Expiry Intelligence Engine
+> **Current Phase:** 4 - Service Schedules & Preventive Maintenance
 > **Status:** ready_to_plan
 
 ## Must-Haves (from SPEC)
 
 - [x] Core data architecture (Asset, Receipt, Warranty, ReturnPolicy, ServiceSchedule, Document) with Prisma ORM
 - [x] Multimodal Receipt OCR and AI extraction via Gemini API
-- [ ] Active Warranty, Expiry & Return Window calculation engine with dashboard alerts
+- [x] Active Warranty, Expiry & Return Window calculation engine with dashboard alerts
 - [ ] Service & maintenance scheduling with log history
 - [ ] Encrypted Document Vault with 1-click insurance & claim dossier export
 - [ ] Natural language search and AI Assistant ("Cognia Intelligence")
@@ -46,19 +46,19 @@ updated: 2026-11-16T13:48:00+05:30
 ---
 
 ### Phase 3: Warranty Tracking & Return/Expiry Intelligence Engine
-**Status:** ⬜ Not Started (Next)
+**Status:** ✅ Complete
 **Objective:** Real-time warranty coverage calculations, return window countdowns, expiring soon dashboard badges, notification schedule triggers, and RFC 5545 calendar export.
 **Depends on:** Phase 2
 
 **Plans:**
-- [ ] Plan 3.1: Warranty & Return Policy Calculation Engine, Status Sync & Server Actions
-- [ ] Plan 3.2: Expiry Notification Dispatcher & RFC 5545 Calendar (.ics) Export Engine
-- [ ] Plan 3.3: Warranties Hub UI, Live Dashboard Integration & Comprehensive Verification
+- [x] Plan 3.1: Warranty & Return Policy Calculation Engine, Status Sync & Server Actions
+- [x] Plan 3.2: Expiry Notification Dispatcher & RFC 5545 Calendar (.ics) Export Engine
+- [x] Plan 3.3: Warranties Hub UI, Live Dashboard Integration & Comprehensive Verification
 
 ---
 
 ### Phase 4: Service Schedules & Preventive Maintenance
-**Status:** ⬜ Not Started
+**Status:** ⬜ Not Started (Next)
 **Objective:** Recurring maintenance interval trackers (vehicles, appliances, home systems), service log entry forms, and maintenance history timeline.
 **Depends on:** Phase 3
 
