@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Package, ShieldCheck, Clock, RotateCcw } from "lucide-react";
+import { Package, ShieldCheck, Clock, RotateCcw, Wrench } from "lucide-react";
 import { DashboardMetrics } from "@/lib/actions/dashboard";
 
 interface MetricCardProps {
@@ -60,9 +60,11 @@ export function MetricCards({ metrics }: MetricCardsProps) {
   const coveragePercentage = metrics?.coveragePercentage ?? 0;
   const expiringSoonCount = metrics?.expiringSoonCount ?? 0;
   const activeReturnWindows = metrics?.activeReturnWindows ?? 0;
+  const pendingMaintenanceCount = metrics?.pendingMaintenanceCount ?? 0;
+  const totalMaintenanceSpent = metrics?.totalMaintenanceSpent ?? 0;
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
       <MetricCard
         title="Total Registered Assets"
         value={totalAssets}
@@ -93,6 +95,20 @@ export function MetricCards({ metrics }: MetricCardsProps) {
         subtitle="Active return deadlines"
         icon={RotateCcw}
         badge={{ text: "Decisions", variant: "indigo" }}
+      />
+      <MetricCard
+        title="Pending Maintenance"
+        value={pendingMaintenanceCount}
+        subtitle={
+          totalMaintenanceSpent > 0
+            ? `$${totalMaintenanceSpent.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} spent`
+            : "Preventive upkeep"
+        }
+        icon={Wrench}
+        badge={{
+          text: pendingMaintenanceCount > 0 ? `${pendingMaintenanceCount} due` : "All clear",
+          variant: pendingMaintenanceCount > 0 ? "rose" : "emerald",
+        }}
       />
     </div>
   );

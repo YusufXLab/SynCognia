@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { ActionResult } from "@/lib/actions/assets";
 import { enhanceWarranty, enhanceReturnPolicy } from "@/lib/services/deadlines";
+import { enhanceMaintenanceSchedule } from "@/lib/services/maintenanceEngine";
 
 export interface DashboardMetrics {
   totalAssets: number;
@@ -12,6 +13,8 @@ export interface DashboardMetrics {
   expiringSoonCount: number;
   activeReturnWindows: number;
   coveragePercentage: number;
+  pendingMaintenanceCount: number;
+  totalMaintenanceSpent: number;
 }
 
 export interface UpcomingDeadlineItem {
@@ -107,7 +110,33 @@ export async function getDashboardData(): Promise<ActionResult<DashboardData>> {
     });
     const enhancedReturns = rawReturnPolicies.map((r) => enhanceReturnPolicy(r));
 
-    // 4. Compute core metrics
+    // 4. Fetch and enhance all maintenance schedules
+    const rawMaintenance = await prisma.maintenanceSchedule.findMany({
+      include: {
+        asset: {
+          select: {
+            id: true,
+            name: true,
+            category: true,
+            brand: true,
+          },
+        },
+      },
+      orderBy: { nextServiceDate: "asc" },
+    });
+    const enhancedMaintenance = rawMaintenance.map((m) => enhanceMaintenanceSchedule(m));
+
+    // Fetch total maintenance spent
+    const maintenanceLogs = await prisma.maintenanceLog.findMany({
+      select: { cost: true },
+    });
+    const totalMaintenanceSpent = maintenanceLogs.reduce((sum, log) => sum + (log.cost ?? 0), 0);
+
+    const pendingMaintenanceCount = enhancedMaintenance.filter(
+      (m) => m.calculatedStatus === "DUE" || m.calculatedStatus === "OVERDUE"
+    ).length;
+
+    // 5. Compute core metrics
     const activeWarranties = enhancedWarranties.filter(
       (w) => w.calculatedStatus === "ACTIVE"
     ).length;
@@ -138,6 +167,8 @@ export async function getDashboardData(): Promise<ActionResult<DashboardData>> {
       expiringSoonCount,
       activeReturnWindows,
       coveragePercentage,
+      pendingMaintenanceCount,
+      totalMaintenanceSpent,
     };
 
     // 5. Construct sorted Upcoming Deadlines
@@ -183,8 +214,36 @@ export async function getDashboardData(): Promise<ActionResult<DashboardData>> {
       }
     }
 
+    // Maintenance schedules that are OVERDUE, DUE, or upcoming within 30 days
+    for (const m of enhancedMaintenance) {
+      if (m.calculatedStatus === "COMPLETED") continue;
+      const isUrgentOrDue = m.calculatedStatus === "OVERDUE" || m.calculatedStatus === "DUE";
+      const isUpcomingSoon = m.remainingDays !== null && m.remainingDays !== undefined && m.remainingDays <= 30;
+
+      if (isUrgentOrDue || isUpcomingSoon) {
+        deadlineCandidates.push({
+          id: `m-${m.id}`,
+          name: `${m.asset?.name || "Asset"} — ${m.title}`,
+          category: m.asset?.category || "Maintenance",
+          type: "Service Schedule",
+          daysLeft: m.remainingDays ?? 0,
+          date: m.nextServiceDate
+            ? new Date(m.nextServiceDate).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })
+            : m.remainingMileage !== null && m.remainingMileage !== undefined
+            ? `${m.remainingMileage} mi left`
+            : "Pending",
+          status: m.calculatedStatus === "OVERDUE" ? "urgent" : m.calculatedStatus === "DUE" ? "expiring" : "normal",
+          link: "/maintenance",
+        });
+      }
+    }
+
     deadlineCandidates.sort((a, b) => a.daysLeft - b.daysLeft);
-    const upcomingDeadlines = deadlineCandidates.slice(0, 5);
+    const upcomingDeadlines = deadlineCandidates.slice(0, 6);
 
     // 6. Construct 5 Recent Assets with status
     const recentAssets: RecentAssetItem[] = assets.slice(0, 5).map((a) => {

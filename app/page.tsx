@@ -1,7 +1,7 @@
 import React from "react";
 import { MetricCards } from "@/components/dashboard/MetricCards";
 import { QuickActions } from "@/components/dashboard/QuickActions";
-import { ShieldCheck, AlertTriangle, Clock, ArrowRight, FileText, Package } from "lucide-react";
+import { ShieldCheck, AlertTriangle, Clock, ArrowRight, FileText, Package, Wrench } from "lucide-react";
 import Link from "next/link";
 import { getDashboardData } from "@/lib/actions/dashboard";
 
@@ -26,10 +26,20 @@ export default async function DashboardPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            System Healthy
-          </span>
+          {metrics?.pendingMaintenanceCount !== undefined && metrics.pendingMaintenanceCount > 0 ? (
+            <Link
+              href="/maintenance"
+              className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-100 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300"
+            >
+              <Wrench className="h-3.5 w-3.5" />
+              {metrics.pendingMaintenanceCount} {metrics.pendingMaintenanceCount === 1 ? "Service" : "Services"} Due
+            </Link>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              System Healthy
+            </span>
+          )}
         </div>
       </div>
 
@@ -50,12 +60,20 @@ export default async function DashboardPage() {
                 Upcoming Deadlines
               </h3>
             </div>
-            <Link
-              href="/warranties"
-              className="flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
-            >
-              View all <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/warranties"
+                className="text-xs font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+              >
+                Warranties
+              </Link>
+              <Link
+                href="/maintenance"
+                className="flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
+              >
+                Maintenance <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
           </div>
 
           <div className="mt-4 divide-y divide-slate-100 dark:divide-slate-800">
@@ -66,7 +84,7 @@ export default async function DashboardPage() {
                   No upcoming deadlines
                 </p>
                 <p className="text-[11px] text-slate-500">
-                  All warranties and return windows are comfortably active.
+                  All warranties, return windows, and maintenance schedules are comfortably active.
                 </p>
               </div>
             ) : (
@@ -75,17 +93,26 @@ export default async function DashboardPage() {
                   <div className="flex items-start gap-3">
                     <div
                       className={`mt-0.5 flex h-7 w-7 items-center justify-center rounded-lg ${
-                        item.status === "urgent"
+                        item.type === "Service Schedule"
+                          ? "bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400"
+                          : item.status === "urgent"
                           ? "bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400"
                           : "bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400"
                       }`}
                     >
-                      <AlertTriangle className="h-4 w-4" />
+                      {item.type === "Service Schedule" ? (
+                        <Wrench className="h-4 w-4" />
+                      ) : (
+                        <AlertTriangle className="h-4 w-4" />
+                      )}
                     </div>
                     <div>
-                      <h4 className="text-sm font-medium text-slate-900 dark:text-white">
+                      <Link
+                        href={item.link}
+                        className="text-sm font-medium text-slate-900 transition-colors hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400"
+                      >
                         {item.name}
-                      </h4>
+                      </Link>
                       <p className="text-xs text-slate-500">
                         {item.category} • {item.type}
                       </p>
@@ -97,10 +124,16 @@ export default async function DashboardPage() {
                       className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
                         item.status === "urgent"
                           ? "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300"
-                          : "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300"
+                          : item.status === "expiring"
+                          ? "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300"
+                          : "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300"
                       }`}
                     >
-                      {item.daysLeft} days left
+                      {item.daysLeft < 0
+                        ? `${Math.abs(item.daysLeft)}d overdue`
+                        : item.daysLeft === 0
+                        ? "Due today"
+                        : `${item.daysLeft} days left`}
                     </span>
                     <p className="mt-0.5 text-[11px] text-slate-400">{item.date}</p>
                   </div>
