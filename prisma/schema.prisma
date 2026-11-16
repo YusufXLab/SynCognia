@@ -159,11 +159,11 @@ model MaintenanceLog {
 
 model Document {
   id           String   @id @default(cuid())
-  assetId      String
-  asset        Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  assetId      String?
+  asset        Asset?   @relation(fields: [assetId], references: [id], onDelete: Cascade)
   
   title        String
-  documentType String   @default("MANUAL") // MANUAL, INVOICE, WARRANTY_CARD, TITLE_DEED, CERTIFICATE
+  documentType String   @default("MANUAL") // MANUAL, INVOICE, WARRANTY_CARD, TITLE_DEED, CERTIFICATE, INSURANCE_POLICY, APPRAISAL
   fileUrl      String
   fileSize     Int?
   mimeType     String?
