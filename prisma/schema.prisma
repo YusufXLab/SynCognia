@@ -42,6 +42,7 @@ model Asset {
   warranties           Warranty[]
   returnPolicies       ReturnPolicy[]
   maintenanceSchedules MaintenanceSchedule[]
+  maintenanceLogs      MaintenanceLog[]
   documents            Document[]
 
   @@index([userId])
@@ -109,25 +110,51 @@ model ReturnPolicy {
 }
 
 model MaintenanceSchedule {
-  id              String    @id @default(cuid())
-  assetId         String
-  asset           Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  id                 String           @id @default(cuid())
+  assetId            String
+  asset              Asset            @relation(fields: [assetId], references: [id], onDelete: Cascade)
   
-  title           String
-  intervalMonths  Int?
-  intervalMileage Int?
-  lastServiceDate DateTime?
-  nextServiceDate DateTime?
-  currentMileage  Int?
-  lastServiceCost Float?
-  notes           String?
-  status          String    @default("UPCOMING") // UPCOMING, DUE, OVERDUE, COMPLETED
+  title              String
+  intervalMonths     Int?
+  intervalMileage    Int?
+  lastServiceDate    DateTime?
+  nextServiceDate    DateTime?
+  lastServiceMileage Int?
+  currentMileage     Int?
+  lastServiceCost    Float?
+  notes              String?
+  status             String           @default("UPCOMING") // UPCOMING, DUE, OVERDUE, COMPLETED
   
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  serviceLogs        MaintenanceLog[]
 
   @@index([assetId])
   @@index([status])
+}
+
+model MaintenanceLog {
+  id                    String               @id @default(cuid())
+  maintenanceScheduleId String?
+  maintenanceSchedule   MaintenanceSchedule? @relation(fields: [maintenanceScheduleId], references: [id], onDelete: SetNull)
+  assetId               String
+  asset                 Asset                @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  
+  title                 String
+  serviceDate           DateTime             @default(now())
+  mileage               Int?
+  cost                  Float?
+  serviceProvider       String?              // mechanic, shop, technician, DIY
+  notes                 String?
+  receiptUrl            String?
+  
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+
+  @@index([maintenanceScheduleId])
+  @@index([assetId])
+  @@index([serviceDate])
 }
 
 model Document {
