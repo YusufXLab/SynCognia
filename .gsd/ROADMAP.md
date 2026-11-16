@@ -6,7 +6,7 @@ updated: 2026-11-16T13:48:00+05:30
 
 # Roadmap
 
-> **Current Phase:** 4 - Service Schedules & Preventive Maintenance
+> **Current Phase:** 5 - Ownership Vault & 1-Click Claim Dossier Generator
 > **Status:** ready_to_plan
 
 ## Must-Haves (from SPEC)
@@ -14,7 +14,7 @@ updated: 2026-11-16T13:48:00+05:30
 - [x] Core data architecture (Asset, Receipt, Warranty, ReturnPolicy, ServiceSchedule, Document) with Prisma ORM
 - [x] Multimodal Receipt OCR and AI extraction via Gemini API
 - [x] Active Warranty, Expiry & Return Window calculation engine with dashboard alerts
-- [ ] Service & maintenance scheduling with log history
+- [x] Service & maintenance scheduling with log history
 - [ ] Encrypted Document Vault with 1-click insurance & claim dossier export
 - [ ] Natural language search and AI Assistant ("Cognia Intelligence")
 
@@ -58,19 +58,19 @@ updated: 2026-11-16T13:48:00+05:30
 ---
 
 ### Phase 4: Service Schedules & Preventive Maintenance
-**Status:** ⬜ Not Started (Next)
+**Status:** ✅ Complete
 **Objective:** Recurring maintenance interval trackers (vehicles, appliances, home systems), service log entry forms, and maintenance history timeline.
 **Depends on:** Phase 3
 
 **Plans:**
-- [ ] Plan 4.1: Preventive Maintenance Engine, Schema Migrations, Server Actions & API Handlers
-- [ ] Plan 4.2: Preventive Maintenance Hub UI, Modals & History Timeline
-- [ ] Plan 4.3: Live Dashboard Maintenance Integration & Comprehensive Automated Verification Suite
+- [x] Plan 4.1: Preventive Maintenance Engine, Schema Migrations, Server Actions & API Handlers
+- [x] Plan 4.2: Preventive Maintenance Hub UI, Modals & History Timeline
+- [x] Plan 4.3: Live Dashboard Maintenance Integration & Comprehensive Automated Verification Suite
 
 ---
 
 ### Phase 5: Ownership Vault & 1-Click Claim Dossier Generator
-**Status:** ⬜ Not Started
+**Status:** ⬜ Not Started (Next)
 **Objective:** Encrypted document storage, categorized asset attachments, insurance inventory PDF/CSV export, and 1-click warranty claim dossier packager.
 **Depends on:** Phase 4
 
