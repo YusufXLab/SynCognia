@@ -70,13 +70,14 @@ updated: 2026-11-16T13:48:00+05:30
 ---
 
 ### Phase 5: Ownership Vault & 1-Click Claim Dossier Generator
-**Status:** ⬜ Not Started (Next)
+**Status:** 🔄 Planning Complete (Ready for Execution)
 **Objective:** Encrypted document storage, categorized asset attachments, insurance inventory PDF/CSV export, and 1-click warranty claim dossier packager.
 **Depends on:** Phase 4
 
 **Plans:**
-- [ ] Plan 5.1: Encrypted document vault with category tagging and file previews
-- [ ] Plan 5.2: Insurance inventory export & 1-click claim dossier PDF generator
+- [ ] Plan 5.1: Document Vault Storage Adapter, Security Engine & Document Server Actions
+- [ ] Plan 5.2: Insurance Inventory Export & 1-Click Warranty Claim Dossier Engine
+- [ ] Plan 5.3: Document Vault Hub UI, Claim Dossier Integration & Automated Verification Suite
 
 ---
 
@@ -98,6 +99,6 @@ updated: 2026-11-16T13:48:00+05:30
 | 1 | ✅ | 3/3 | 100% |
 | 2 | ✅ | 2/2 | 100% |
 | 3 | ✅ | 3/3 | 100% |
-| 4 | ⬜ | 0/3 | 0% |
-| 5 | ⬜ | 0/2 | 0% |
+| 4 | ✅ | 3/3 | 100% |
+| 5 | 🔄 | 0/3 | 0% |
 | 6 | ⬜ | 0/2 | 0% |
