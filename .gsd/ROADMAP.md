@@ -6,7 +6,7 @@ updated: 2026-11-16T13:48:00+05:30
 
 # Roadmap
 
-> **Current Phase:** 5 - Ownership Vault & 1-Click Claim Dossier Generator
+> **Current Phase:** 6 - Cognia Intelligence Assistant & Semantic Search
 > **Status:** ready_to_plan
 
 ## Must-Haves (from SPEC)
@@ -15,7 +15,7 @@ updated: 2026-11-16T13:48:00+05:30
 - [x] Multimodal Receipt OCR and AI extraction via Gemini API
 - [x] Active Warranty, Expiry & Return Window calculation engine with dashboard alerts
 - [x] Service & maintenance scheduling with log history
-- [ ] Encrypted Document Vault with 1-click insurance & claim dossier export
+- [x] Encrypted Document Vault with 1-click insurance & claim dossier export
 - [ ] Natural language search and AI Assistant ("Cognia Intelligence")
 
 ---
@@ -70,19 +70,19 @@ updated: 2026-11-16T13:48:00+05:30
 ---
 
 ### Phase 5: Ownership Vault & 1-Click Claim Dossier Generator
-**Status:** 🔄 Planning Complete (Ready for Execution)
+**Status:** ✅ Complete
 **Objective:** Encrypted document storage, categorized asset attachments, insurance inventory PDF/CSV export, and 1-click warranty claim dossier packager.
 **Depends on:** Phase 4
 
 **Plans:**
-- [ ] Plan 5.1: Document Vault Storage Adapter, Security Engine & Document Server Actions
-- [ ] Plan 5.2: Insurance Inventory Export & 1-Click Warranty Claim Dossier Engine
-- [ ] Plan 5.3: Document Vault Hub UI, Claim Dossier Integration & Automated Verification Suite
+- [x] Plan 5.1: Document Vault Storage Adapter, Security Engine & Document Server Actions
+- [x] Plan 5.2: Insurance Inventory Export & 1-Click Warranty Claim Dossier Engine
+- [x] Plan 5.3: Document Vault Hub UI, Claim Dossier Integration & Automated Verification Suite
 
 ---
 
 ### Phase 6: Cognia Intelligence Assistant & Semantic Search
-**Status:** ⬜ Not Started
+**Status:** ⬜ Not Started (Next)
 **Objective:** Vector embeddings for documents/receipts, natural language asset search, and context-aware warranty claim drafting assistant.
 **Depends on:** Phase 5
 
@@ -100,5 +100,5 @@ updated: 2026-11-16T13:48:00+05:30
 | 2 | ✅ | 2/2 | 100% |
 | 3 | ✅ | 3/3 | 100% |
 | 4 | ✅ | 3/3 | 100% |
-| 5 | 🔄 | 0/3 | 0% |
+| 5 | ✅ | 3/3 | 100% |
 | 6 | ⬜ | 0/2 | 0% |
