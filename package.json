@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:phase3": "tsx scripts/verify-phase-3.ts"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
