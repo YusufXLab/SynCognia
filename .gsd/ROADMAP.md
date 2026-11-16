@@ -6,13 +6,13 @@ updated: 2026-11-16T13:48:00+05:30
 
 # Roadmap
 
-> **Current Phase:** 2 - AI Multi-Modal Ingestion & Receipt Extraction
+> **Current Phase:** 3 - Warranty Tracking & Return/Expiry Intelligence Engine
 > **Status:** ready_to_plan
 
 ## Must-Haves (from SPEC)
 
 - [x] Core data architecture (Asset, Receipt, Warranty, ReturnPolicy, ServiceSchedule, Document) with Prisma ORM
-- [ ] Multimodal Receipt OCR and AI extraction via Gemini API
+- [x] Multimodal Receipt OCR and AI extraction via Gemini API
 - [ ] Active Warranty, Expiry & Return Window calculation engine with dashboard alerts
 - [ ] Service & maintenance scheduling with log history
 - [ ] Encrypted Document Vault with 1-click insurance & claim dossier export
@@ -35,18 +35,18 @@ updated: 2026-11-16T13:48:00+05:30
 ---
 
 ### Phase 2: AI Multi-Modal Ingestion & Receipt Extraction
-**Status:** ⬜ Not Started (Next)
+**Status:** ✅ Complete
 **Objective:** Multimodal capture pipeline (file dropzone, image/PDF processing), Gemini 2.5 Flash structured receipt OCR parsing, and review/edit verification UI.
 **Depends on:** Phase 1
 
 **Plans:**
-- [ ] Plan 2.1: Multi-modal document upload pipeline & storage adapter
-- [ ] Plan 2.2: Gemini structured receipt extraction engine & verification UI
+- [x] Plan 2.1: Multi-modal document upload pipeline & storage adapter
+- [x] Plan 2.2: Gemini structured receipt extraction engine & verification UI
 
 ---
 
 ### Phase 3: Warranty Tracking & Return/Expiry Intelligence Engine
-**Status:** ⬜ Not Started
+**Status:** ⬜ Not Started (Next)
 **Objective:** Real-time warranty coverage calculations, return window countdowns, expiring soon dashboard badges, and notification schedule triggers.
 **Depends on:** Phase 2
 
