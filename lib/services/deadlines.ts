@@ -210,46 +210,44 @@ export async function syncAllDeadlineStatuses(
     }),
   ]);
 
-  let warrantiesUpdated = 0;
-  let returnsUpdated = 0;
-
-  const warrantyUpdates: Promise<unknown>[] = [];
+  const warrantiesToUpdate: { id: string; status: WarrantyStatus }[] = [];
   for (const w of warranties) {
     const calculated = calculateWarrantyStatus(w.endDate, w.warrantyType, referenceDate);
     if (w.status !== calculated) {
-      warrantiesUpdated++;
-      warrantyUpdates.push(
-        prisma.warranty.update({
-          where: { id: w.id },
-          data: { status: calculated },
-        })
-      );
+      warrantiesToUpdate.push({ id: w.id, status: calculated });
     }
   }
 
-  const returnUpdates: Promise<unknown>[] = [];
+  const returnsToUpdate: { id: string; status: ReturnPolicyStatus }[] = [];
   for (const p of returnPolicies) {
     if (p.returnStatus === "RETURNED") continue;
     const calculated = calculateReturnStatus(p.returnDeadline, p.returnStatus, referenceDate);
     if (p.returnStatus !== calculated) {
-      returnsUpdated++;
-      returnUpdates.push(
-        prisma.returnPolicy.update({
-          where: { id: p.id },
-          data: { returnStatus: calculated },
-        })
-      );
+      returnsToUpdate.push({ id: p.id, status: calculated });
     }
   }
 
-  if (warrantyUpdates.length > 0 || returnUpdates.length > 0) {
-    await prisma.$transaction([...warrantyUpdates, ...returnUpdates]);
+  if (warrantiesToUpdate.length > 0 || returnsToUpdate.length > 0) {
+    await prisma.$transaction(async (tx) => {
+      for (const w of warrantiesToUpdate) {
+        await tx.warranty.update({
+          where: { id: w.id },
+          data: { status: w.status },
+        });
+      }
+      for (const p of returnsToUpdate) {
+        await tx.returnPolicy.update({
+          where: { id: p.id },
+          data: { returnStatus: p.status },
+        });
+      }
+    });
   }
 
   return {
     warrantiesChecked: warranties.length,
-    warrantiesUpdated,
+    warrantiesUpdated: warrantiesToUpdate.length,
     returnsChecked: returnPolicies.length,
-    returnsUpdated,
+    returnsUpdated: returnsToUpdate.length,
   };
 }

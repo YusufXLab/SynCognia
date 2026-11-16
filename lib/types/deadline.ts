@@ -25,6 +25,8 @@ export interface DeadlineSyncResult {
   returnsUpdated: number;
 }
 
-export type EnhancedWarranty<T = Record<string, unknown>> = T & CalculatedWarrantyFields;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type EnhancedWarranty<T = any> = T & CalculatedWarrantyFields;
 
-export type EnhancedReturnPolicy<T = Record<string, unknown>> = T & CalculatedReturnPolicyFields;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type EnhancedReturnPolicy<T = any> = T & CalculatedReturnPolicyFields;

@@ -1,13 +1,31 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 import { CreateWarrantyInput } from "@/lib/validations/asset";
 import { ActionResult } from "@/lib/actions/assets";
+import { enhanceWarranty, syncAllDeadlineStatuses } from "@/lib/services/deadlines";
+import { EnhancedWarranty, DeadlineSyncResult } from "@/lib/types/deadline";
 
-export async function getWarranties(status?: string): Promise<ActionResult<unknown[]>> {
+function safeRevalidate(paths: string[]) {
   try {
-    const warranties = await prisma.warranty.findMany({
-      where: status ? { status } : undefined,
+    for (const p of paths) {
+      revalidatePath(p);
+    }
+  } catch {
+    // revalidatePath is a no-op outside Next.js request contexts (e.g. CLI/tests)
+  }
+}
+
+/**
+ * Retrieves warranties with associated asset details,
+ * enhanced with calculated status, elapsed percentage, and remaining days.
+ */
+export async function getWarranties(
+  statusFilter?: string
+): Promise<ActionResult<EnhancedWarranty[]>> {
+  try {
+    const rawWarranties = await prisma.warranty.findMany({
       include: {
         asset: {
           select: {
@@ -17,20 +35,37 @@ export async function getWarranties(status?: string): Promise<ActionResult<unkno
             brand: true,
             modelNumber: true,
             serialNumber: true,
+            purchaseDate: true,
           },
         },
       },
       orderBy: { endDate: "asc" },
     });
 
-    return { success: true, data: warranties };
+    const enhanced = rawWarranties.map((w) => enhanceWarranty(w));
+
+    const filtered = statusFilter
+      ? enhanced.filter(
+          (w) => w.calculatedStatus.toUpperCase() === statusFilter.toUpperCase()
+        )
+      : enhanced;
+
+    return { success: true, data: filtered };
   } catch (error) {
     console.error("Failed to get warranties:", error);
-    return { success: false, error: (error as Error).message || "Failed to fetch warranties" };
+    return {
+      success: false,
+      error: (error as Error).message || "Failed to fetch warranties",
+    };
   }
 }
 
-export async function createWarranty(input: CreateWarrantyInput): Promise<ActionResult<unknown>> {
+/**
+ * Creates a warranty record and triggers route revalidation.
+ */
+export async function createWarranty(
+  input: CreateWarrantyInput
+): Promise<ActionResult<EnhancedWarranty>> {
   try {
     if (!input.assetId) {
       return { success: false, error: "Asset ID is required to associate warranty" };
@@ -53,27 +88,84 @@ export async function createWarranty(input: CreateWarrantyInput): Promise<Action
         status: input.status || "ACTIVE",
       },
       include: {
-        asset: true,
+        asset: {
+          select: {
+            id: true,
+            name: true,
+            category: true,
+            brand: true,
+            modelNumber: true,
+            serialNumber: true,
+            purchaseDate: true,
+          },
+        },
       },
     });
 
-    return { success: true, data: warranty };
+    safeRevalidate(["/warranties", "/assets", "/"]);
+
+    return { success: true, data: enhanceWarranty(warranty) };
   } catch (error) {
     console.error("Failed to create warranty:", error);
-    return { success: false, error: (error as Error).message || "Failed to create warranty" };
+    return {
+      success: false,
+      error: (error as Error).message || "Failed to create warranty",
+    };
   }
 }
 
-export async function updateWarrantyStatus(id: string, status: string): Promise<ActionResult<unknown>> {
+/**
+ * Updates a warranty record status.
+ */
+export async function updateWarrantyStatus(
+  id: string,
+  status: string
+): Promise<ActionResult<EnhancedWarranty>> {
   try {
     const updated = await prisma.warranty.update({
       where: { id },
       data: { status },
+      include: {
+        asset: {
+          select: {
+            id: true,
+            name: true,
+            category: true,
+            brand: true,
+            modelNumber: true,
+            serialNumber: true,
+            purchaseDate: true,
+          },
+        },
+      },
     });
 
-    return { success: true, data: updated };
+    safeRevalidate(["/warranties", "/assets", "/"]);
+
+    return { success: true, data: enhanceWarranty(updated) };
   } catch (error) {
     console.error(`Failed to update warranty status ${id}:`, error);
-    return { success: false, error: (error as Error).message || "Failed to update warranty status" };
+    return {
+      success: false,
+      error: (error as Error).message || "Failed to update warranty status",
+    };
+  }
+}
+
+/**
+ * Server Action to run real-time calendar synchronization for both
+ * warranties and return policies, synchronizing DB state and revalidating routes.
+ */
+export async function syncWarrantiesAndReturns(): Promise<ActionResult<DeadlineSyncResult>> {
+  try {
+    const syncResult = await syncAllDeadlineStatuses();
+    safeRevalidate(["/warranties", "/assets", "/"]);
+    return { success: true, data: syncResult };
+  } catch (error) {
+    console.error("Failed to sync warranties and returns:", error);
+    return {
+      success: false,
+      error: (error as Error).message || "Failed to sync deadline statuses",
+    };
   }
 }
