@@ -1,0 +1,150 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  assets    Asset[]
+}
+
+model Asset {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name          String
+  category      String    // Electronics, Appliances, Vehicles, Tools, Personal, Furniture
+  brand         String?
+  modelNumber   String?
+  serialNumber  String?
+  purchaseDate  DateTime?
+  purchasePrice Float?
+  currency      String    @default("USD")
+  location      String?   // Home Office, Kitchen, Garage, Living Room, etc.
+  status        String    @default("ACTIVE") // ACTIVE, SOLD, RETIRED, LOST
+  notes         String?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  receipts             Receipt[]
+  warranties           Warranty[]
+  returnPolicies       ReturnPolicy[]
+  maintenanceSchedules MaintenanceSchedule[]
+  documents            Document[]
+
+  @@index([userId])
+  @@index([category])
+  @@index([status])
+}
+
+model Receipt {
+  id           String    @id @default(cuid())
+  assetId      String?
+  asset        Asset?    @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  
+  merchant     String
+  purchaseDate DateTime?
+  totalAmount  Float?
+  currency     String    @default("USD")
+  rawOcrText   String?
+  fileUrl      String?
+  mimeType     String?
+  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([assetId])
+}
+
+model Warranty {
+  id             String    @id @default(cuid())
+  assetId        String
+  asset          Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  
+  provider       String    // Manufacturer, Retailer, Third-party
+  warrantyType   String    @default("MANUFACTURER") // MANUFACTURER, EXTENDED, LIFETIME
+  durationMonths Int?
+  startDate      DateTime?
+  endDate        DateTime?
+  policyNumber   String?
+  supportContact String?
+  claimUrl       String?
+  status         String    @default("ACTIVE") // ACTIVE, EXPIRING_SOON, EXPIRED
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([assetId])
+  @@index([status])
+  @@index([endDate])
+}
+
+model ReturnPolicy {
+  id               String    @id @default(cuid())
+  assetId          String
+  asset            Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  
+  returnWindowDays Int       @default(30)
+  returnDeadline   DateTime?
+  policyDetails    String?
+  returnStatus     String    @default("OPEN") // OPEN, EXPIRING_SOON, EXPIRED, RETURNED
+  
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([assetId])
+  @@index([returnStatus])
+}
+
+model MaintenanceSchedule {
+  id              String    @id @default(cuid())
+  assetId         String
+  asset           Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  
+  title           String
+  intervalMonths  Int?
+  intervalMileage Int?
+  lastServiceDate DateTime?
+  nextServiceDate DateTime?
+  currentMileage  Int?
+  lastServiceCost Float?
+  notes           String?
+  status          String    @default("UPCOMING") // UPCOMING, DUE, OVERDUE, COMPLETED
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([assetId])
+  @@index([status])
+}
+
+model Document {
+  id           String   @id @default(cuid())
+  assetId      String
+  asset        Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  
+  title        String
+  documentType String   @default("MANUAL") // MANUAL, INVOICE, WARRANTY_CARD, TITLE_DEED, CERTIFICATE
+  fileUrl      String
+  fileSize     Int?
+  mimeType     String?
+  isEncrypted  Boolean  @default(false)
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([assetId])
+  @@index([documentType])
+}
