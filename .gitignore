@@ -28,3 +28,12 @@ Thumbs.db
 
 # GSD transient execution / debug logs
 *.log
+
+# SQLite database
+*.db
+*.db-journal
+
+# Uploads
+public/uploads/receipts/*
+!public/uploads/receipts/.gitkeep
+
